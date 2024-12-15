@@ -68,7 +68,6 @@ initial_positions = [
     for col in range(5) for row in range(5 - col)
 ]
 cue_ball_position = (888, 678 / 2)
-
 # Export cue_ball separately
 cue_ball = None  # Placeholder, actual cue_ball will be initialized in main
 __all__ = ["create_ball", "create_cushion", "pockets", "balls", "cue_ball", "cushions", "initialize_balls"]

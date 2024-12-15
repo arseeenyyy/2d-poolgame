@@ -17,6 +17,7 @@ pygame.display.set_caption("Pool")
 space = pymunk.Space()
 static_body = space.static_body
 cue_ball = initialize_balls(space)
+space.gravity = [0, 0]
 
 # Load assets
 table_image, ball_images, cue_image = load_assets()
@@ -37,6 +38,21 @@ force = 0
 force_direction = 1
 powering_up = False
 potted_balls = []
+gravity_modes = {
+    "1": {"name": "Standard", "gravity": [0, 0], "damping": 0.9},  # Нет гравитации
+    "2": {"name": "Space", "gravity": [0, 0], "damping": 1.0},     # Космос: без трения
+    "3": {"name": "Moon", "gravity": [0, 100], "damping": 0.95},   # Луна
+    "4": {"name": "Upside Down", "gravity": [0, -500], "damping": 0.9},  # Гравитация вверх
+    "5": {"name": "Chaos", "gravity": [0, 5000], "damping": 0.7},  # Очень сильная гравитация
+}
+current_mode_key = "1" 
+space.gravity = gravity_modes[current_mode_key]["gravity"]
+space.damping = gravity_modes[current_mode_key]["damping"]
+
+# Function to draw gravity mode
+def draw_gravity_mode(surface, mode_key):
+    mode_name = gravity_modes[mode_key]["name"]
+    draw_text_with_shadow(f"Gravity Mode: {mode_name}", font, WHITE, SHADOW, SCREEN_WIDTH - 700, SCREEN_HEIGHT + BOTTOM_PANEL - 40, surface)
 
 while run:
     clock.tick(FPS)
@@ -65,7 +81,7 @@ while run:
     elif game_running:
         screen.fill(GREY)
         screen.blit(table_image, (0, 0))
-
+        draw_gravity_mode(screen, current_mode_key)
         # Check for potted balls
         for i, ball in enumerate(balls):
             for pocket in pockets:
@@ -134,6 +150,7 @@ while run:
         if len(balls) == 1:  # Only the cue ball is left
             draw_text_centered_with_shadow("YOU WIN!", large_font, WHITE, SHADOW, screen, SCREEN_HEIGHT // 2 - 100)
             game_running = False
+            pygame.quit()
 
         # Handle game events
         for event in pygame.event.get():
@@ -151,7 +168,18 @@ while run:
                     max_force = min(20000, max_force + 1000)
                 if event.key == pygame.K_DOWN:
                     max_force = max(2000, max_force - 1000)
-                    
+                if event.key == pygame.K_LEFT:
+                    # Switch to previous gravity mode
+                    current_mode_key = str((int(current_mode_key) - 1) % len(gravity_modes) or len(gravity_modes))
+                    mode = gravity_modes[current_mode_key]
+                    space.gravity = mode["gravity"]
+                    space.damping = mode["damping"]
+                if event.key == pygame.K_RIGHT:
+                    # Switch to next gravity mode
+                    current_mode_key = str((int(current_mode_key) % len(gravity_modes) + 1))
+                    mode = gravity_modes[current_mode_key]
+                    space.gravity = mode["gravity"]
+                    space.damping = mode["damping"]
     pygame.display.update()
 
 pygame.quit()
