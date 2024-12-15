@@ -1,7 +1,6 @@
 import pygame
 
 def load_assets():
-    # Load images
     cue_image = pygame.image.load("assets/images/cue.png").convert_alpha()
     table_image = pygame.image.load("assets/images/table.png").convert_alpha()
     ball_images = [

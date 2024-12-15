@@ -1,7 +1,6 @@
 import pymunk
 from settings import dia
 
-# Create balls
 balls = []
 rows = 5
 
@@ -11,8 +10,6 @@ def create_ball(radius, pos, space):
     shape = pymunk.Circle(body, radius)
     shape.mass = 5
     shape.elasticity = 0.8
-
-    # Add friction
     pivot = pymunk.PivotJoint(space.static_body, body, (0, 0), (0, 0))
     pivot.max_bias = 0
     pivot.max_force = 1000
@@ -20,7 +17,7 @@ def create_ball(radius, pos, space):
     space.add(body, shape, pivot)
     return shape
 
-# Pockets on the table
+#pockets on the table
 pockets = [
     (55, 63),
     (592, 48),
@@ -30,7 +27,7 @@ pockets = [
     (1134, 616)
 ]
 
-# Create cushions
+#create cushions
 cushions = [
     [(88, 56), (109, 77), (555, 77), (564, 56)],
     [(621, 56), (630, 77), (1081, 77), (1102, 56)],
@@ -47,7 +44,6 @@ def create_cushion(poly_dims, space):
     shape.elasticity = 0.8
     space.add(body, shape)
 
-# Initialize balls
 def initialize_balls(space):
     global balls
     rows = 5
@@ -58,7 +54,6 @@ def initialize_balls(space):
             balls.append(new_ball)
         rows -= 1
 
-    # Create the cue ball
     cue_ball = create_ball(dia / 2, (888, 678 / 2), space)
     balls.append(cue_ball)
     return cue_ball
@@ -68,6 +63,5 @@ initial_positions = [
     for col in range(5) for row in range(5 - col)
 ]
 cue_ball_position = (888, 678 / 2)
-# Export cue_ball separately
-cue_ball = None  # Placeholder, actual cue_ball will be initialized in main
+cue_ball = None  
 __all__ = ["create_ball", "create_cushion", "pockets", "balls", "cue_ball", "cushions", "initialize_balls"]
